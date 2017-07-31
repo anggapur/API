@@ -32,7 +32,8 @@ class productCtrl extends Controller
                     'seller'=>function($q){
                             $q->select('id','name','company_name','send_from');
                         }
-                ])                
+                ])      
+                ->withCount('seen')          
                 ->orderBy($sort,$order)
                 ->paginate($dataPerPage);
         
