@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::resource('products','productCtrl');
+Route::resource('categories','categoryCtrl');

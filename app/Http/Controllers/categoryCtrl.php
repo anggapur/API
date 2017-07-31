@@ -3,47 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\product;
 use App\category;
 use JP;
-class productCtrl extends Controller
+use DB;
+use App\product;
+class categoryCtrl extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        //get data per page will show
-        $dataPerPage = $request->input('data_per_page');
-        if(!$dataPerPage)
-            $dataPerPage = 10;
-        //get order
-        $order = $request->input('order');
-        if(!$order)
-            $order = "ASC";
-        //sort by
-        $sort = $request->input('sort');
-        if(!$sort)
-            $sort = "products.id";
-        //querying
-        $query = product::with([
-                    'seller'=>function($q){
-                            $q->select('id','name','company_name','send_from');
-                        }
-                ])                
-                ->orderBy($sort,$order)
-                ->paginate($dataPerPage);
+        //
+        $query = category::with(array('child' => function($query){
+                    $query->with('child')->select('*');
+                }))
+                ->where('parent_id','0')->get();
         
         if($query)
         {
-            $data['message'] = "success";
-            $data['results'] = $query;    
+            $data['message'] = 'success';
+            $data['results'] = $query;
         }
         else
         {
-            $data['message'] = "failed";
+            $data['message'] = 'failed';
         }
 
         return JP::prints($data);
@@ -76,61 +62,49 @@ class productCtrl extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,Request $request)
     {
-        //
-         // ->with(array('category' => function($q){
-         //            $q->with(array('parentCategory' => function($q){
-         //                $q->with('parentCategory')->select('*');        
-         //            }))->select('*');        
-         //        }))
-        
-        $query = product::with(array('seller' => function($q){
-                    $q->select('id','name','avatar','company_name');        
-                }))
-                ->with('category')
-                ->withCount('seen')
-                ->with('rate')
-                ->with('image')
-                ->findorFail($id);
-
-        //category
-        $q = category::with(array('child' => function($query){
+        $data_per_page = $request->input('data_per_page');
+        if(!$data_per_page)
+            $data_per_page = 10;
+        //query get id's
+         $query = category::with(array('child' => function($query){
                     $query->with('child')->select('*');
                 }))
-                ->where('id',$query->category_id)->get();
+                ->where('id',$id)->get();
         $ids= array();
-        foreach($q as $val)
+        foreach($query as $val)
         {
             //floor 1            
-            array_push($ids,$val->name);
+            array_push($ids,$val->id);
             if($val->child !== "")
             {
                 foreach ($val->child as $value) {
                     // floor 2                
-                    array_push($ids,$value->name);
+                    array_push($ids,$value->id);
                     if($value->child !== "")
                     {
                         foreach ($value->child as $values) {                            
-                            array_push($ids,$values->name);
+                            array_push($ids,$values->id);
                         }
                     }
                 }
             }
         }
-        //print_r($ids);
-
+        //show product by ids
+        $query = product::whereIn('category_id',$ids)->paginate($data_per_page);
         if($query)
         {
             $data['message'] = 'success';
             $data['results'] = $query;
-            $data['results']['tags'] = $ids;
         }
         else
         {
-            $data['message'] = 'failed';
+            $data['message'] ='failed';
         }
         return JP::prints($data);
+
+
     }
 
     /**

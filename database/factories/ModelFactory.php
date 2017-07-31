@@ -20,6 +20,13 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+        'company_name' => 'Company '.$faker->name,
+        'username' => $faker->userName,
+        'identity_id' => $faker->unique()->randomNumber(6),
+        'identity_category' => 'KTP',
+        'phone' => $faker->phoneNumber,
+        'avatar' => 'avatar'.$faker->randomNumber(1).'.jpg',
+        'send_from' => $faker->city,
     ];
 });
 

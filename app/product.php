@@ -21,9 +21,20 @@ class product extends Model
     {
     	return $this->hasMany('App\favorite','product_id','id');
     }
-    public function childImage()
+    public function image()
     {
     	return $this->hasMany('App\image','product_id','id');
     }
-
+    public function seller()
+    {
+        return $this->hasOne('App\User','id','seller_id');
+    }
+     public function category()
+    {
+        return $this->hasOne('App\category','id','category_id');
+    }
+     public function parentCategory()
+    {
+        return $this->hasOne('App\category','id','parent_id');
+    }
 }
