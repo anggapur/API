@@ -38,9 +38,8 @@ class productCtrl extends Controller
         
         if($query)
         {
-            $data['message'] = "success"; 
-            $data = $query;   
-            
+            $data['message'] = "success";
+            $data['results'] = $query;    
         }
         else
         {
@@ -123,10 +122,9 @@ class productCtrl extends Controller
 
         if($query)
         {
-            
-            $data = $query;
             $data['message'] = 'success';
-            $data['tags'] = $ids;
+            $data['results'] = $query;
+            $data['results']['tags'] = $ids;
         }
         else
         {

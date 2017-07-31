@@ -14,6 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('products/search/{q}','productCtrl@search');
-Route::resource('products','productCtrl');
-Route::resource('categories','categoryCtrl');
+Route::get('notValid',function(){
+	return view('notValid');
+	});
+Route::middleware([])->group(function(){
+	Route::get('products/search/{q}','productCtrl@search');
+	Route::resource('products','productCtrl');
+	Route::resource('categories','categoryCtrl');
+});
