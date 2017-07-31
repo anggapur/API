@@ -38,8 +38,9 @@ class productCtrl extends Controller
         
         if($query)
         {
-            $data['message'] = "success";
-            $data['results'] = $query;    
+            
+            $data= $query;   
+            $data['message'] = "success"; 
         }
         else
         {
