@@ -92,7 +92,9 @@ class categoryCtrl extends Controller
             }
         }
         //show product by ids
-        $query = product::whereIn('category_id',$ids)->paginate($data_per_page);
+        $query = product::with(array('seller'=>function($q){
+            $q->select('id','name','company_name','send_from');
+        }))->whereIn('category_id',$ids)->paginate($data_per_page);
         if($query)
         {
             $data['message'] = 'success';

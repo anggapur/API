@@ -166,4 +166,41 @@ class productCtrl extends Controller
     {
         //
     }
+    public function search($qs,Request $request)
+    {
+        
+        //get data per page will show
+        $dataPerPage = $request->input('data_per_page');
+        if(!$dataPerPage)
+            $dataPerPage = 10;
+        //get order
+        $order = $request->input('order');
+        if(!$order)
+            $order = "ASC";
+        //sort by
+        $sort = $request->input('sort');
+        if(!$sort)
+            $sort = "products.id";
+        //querying
+        $query = product::with([
+                    'seller'=>function($q){
+                            $q->select('id','name','company_name','send_from');
+                        }
+                ])                
+                ->orderBy($sort,$order)
+                ->where('products.name','like','%'.$qs.'%')
+                ->paginate($dataPerPage);
+        
+        if($query)
+        {
+            $data['message'] = "success";
+            $data['results'] = $query;    
+        }
+        else
+        {
+            $data['message'] = "failed";
+        }
+
+        return JP::prints($data);
+    }
 }
