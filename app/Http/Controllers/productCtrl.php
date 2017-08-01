@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\product;
 use App\category;
+use App\seen;
 use JP;
 class productCtrl extends Controller
 {
@@ -77,7 +78,7 @@ class productCtrl extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,Request $request)
     {
         //
          // ->with(array('category' => function($q){
@@ -86,6 +87,11 @@ class productCtrl extends Controller
          //            }))->select('*');        
          //        }))
         
+        //just insert to seen
+        $datas['ip'] = $request->ip();
+        $datas['product_id'] = $id;
+        seen::create($datas);
+        //query to get
         $query = product::with(array('seller' => function($q){
                     $q->select('id','name','avatar','company_name');        
                 }))
