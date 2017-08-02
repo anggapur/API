@@ -17,9 +17,10 @@ Route::get('/', function () {
 Route::get('notValid',function(){
 	return view('notValid');
 	});
-Route::middleware([])->group(function(){
+Route::middleware(['cekApiKey'])->group(function(){
 	Route::get('products/search/{q}','productCtrl@search');
 	Route::resource('products','productCtrl');
 	Route::resource('sliders','sliderCtrl');
 	Route::resource('categories','categoryCtrl');
+	Route::resource('carts','cartCtrl');
 });
