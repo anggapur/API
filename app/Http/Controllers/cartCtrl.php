@@ -121,5 +121,17 @@ class cartCtrl extends Controller
     public function destroy($id)
     {
         //
+        $query = cart::where('id',$id)->get();      
+        if(count($query) > 0)
+        {
+            $query = cart::where('id',$id)->delete();
+            $data['message'] = "succes";
+        }
+        else
+        {
+            $data['message'] = "failed";
+        }
+
+        return $data;
     }
 }
