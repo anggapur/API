@@ -76,7 +76,7 @@ class cartCtrl extends Controller
         {
             $query = cart::leftJoin('products','carts.product_id','=','products.id')
                     ->leftJoin('users','products.seller_id','=','users.id')
-                    ->select('carts.*','products.*','products.name as product_name','users.*','users.name as user_name',DB::raw('carts.qty * products.price_sell as totalHarga'))
+                    ->select('carts.id as cart_id','carts.*','products.*','products.name as product_name','users.*','users.name as user_name',DB::raw('carts.qty * products.price_sell as totalHarga'))
                     ->where('buyer_id',$id)->get();
             $data['message'] = "success";
             $data['results'] = $query;
