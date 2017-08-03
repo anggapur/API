@@ -23,4 +23,6 @@ Route::middleware(['cekApiKey'])->group(function(){
 	Route::resource('sliders','sliderCtrl');
 	Route::resource('categories','categoryCtrl');
 	Route::resource('carts','cartCtrl');
+	Route::resource('users','userCtrl');
+	Route::any('login','userCtrl@login');
 });
